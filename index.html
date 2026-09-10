@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Passeport d'accompagnement — Malek MENAD</title>
+<meta name="description" content="Outil web pour rassembler les repères essentiels à l’accompagnement quotidien d’un enfant, à destination des professionnels et des familles.">
+<link rel="icon" href="favicon.ico" type="image/x-icon">
+<link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+<style>
+:root{
+  --bg:#f4f5f7; --card:#fff; --ink:#2d3138; --muted:#6f7580; --line:#dfe3e8;
+  --violet:#6a1b9a; --violet-dark:#4a148c; --soft:#f7f2fa; --green:#2f7d5b; --amber:#9a6a17;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;line-height:1.45}
+button,input,textarea,select{font:inherit}
+.app{max-width:1180px;margin:0 auto;padding-bottom:40px}
+.header{background:linear-gradient(135deg,var(--violet),#7c35a6);color:#fff;padding:28px 20px;text-align:center}
+.header .eyebrow{font-size:11px;letter-spacing:2px;text-transform:uppercase;opacity:.82}
+.header h1{margin:5px 0 8px;font-size:30px}.header p{margin:0 auto;max-width:760px;font-size:14px;opacity:.92}
+.toolbar{position:sticky;top:0;z-index:20;display:flex;gap:8px;flex-wrap:wrap;align-items:center;padding:12px 16px;background:#fff;border-bottom:1px solid var(--line)}
+.btn{border:0;border-radius:9px;padding:9px 13px;font-weight:700;cursor:pointer}.btn.primary{background:var(--violet);color:#fff}.btn.secondary{background:#eceff2;color:#333}.btn.green{background:#2f8a61;color:#fff}.btn.danger{background:#c95858;color:#fff}.btn.ghost{background:#fff;border:1px solid var(--line);color:#444}.spacer{flex:1}
+.profilebar{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.profilebar select{min-width:190px;width:auto}
+.statusline{font-size:11.5px;color:var(--muted);margin-top:6px}
+.version-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.version-row select{flex:1;min-width:220px}
+.content{padding:18px}.layout{display:grid;grid-template-columns:1.05fr .95fr;gap:16px}
+.card{background:var(--card);border:1px solid #eceff3;border-radius:16px;padding:18px;box-shadow:0 2px 9px rgba(0,0,0,.05);margin-bottom:14px}
+.card h2{font-size:19px;margin:0 0 13px}.card h3{font-size:15px;margin:0 0 10px}
+.subtle{font-size:12.5px;color:var(--muted)}
+.field{margin-bottom:13px}label{display:block;font-size:12.5px;font-weight:750;margin-bottom:5px;color:#464b53}
+input[type=text],input[type=number],textarea,select{width:100%;border:1px solid var(--line);border-radius:9px;padding:9px 10px;background:#fbfcfd}
+textarea{min-height:72px;resize:vertical}.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.checks{display:flex;flex-wrap:wrap;gap:7px}.check{display:flex;align-items:center;gap:6px;padding:7px 9px;border:1px solid var(--line);border-radius:999px;background:#fff;font-size:12px}.check input{margin:0}
+.note{background:var(--soft);border-left:4px solid var(--violet);padding:10px 12px;border-radius:8px;font-size:12.5px;color:#555;margin-bottom:12px}
+.preview-wrap{position:sticky;top:76px}.passport{background:#eef0f4;border:1px solid var(--line);border-radius:18px;padding:18px;min-height:720px}
+.passport-cover{position:relative;overflow:hidden;background:linear-gradient(145deg,#4a148c 0%,#6a1b9a 58%,#8a4cb0 100%);color:#fff;border-radius:18px;padding:24px 24px 20px;margin-bottom:16px;box-shadow:0 8px 22px rgba(74,20,140,.18)}
+.passport-cover:before,.passport-cover:after{content:"";position:absolute;border:1px solid rgba(255,255,255,.16);border-radius:50%}.passport-cover:before{width:190px;height:190px;right:-70px;top:-85px}.passport-cover:after{width:125px;height:125px;right:-30px;top:-45px}
+.passport-kicker{font-size:10px;letter-spacing:2px;text-transform:uppercase;opacity:.82;font-weight:800}.passport-main-title{font-size:27px;line-height:1.08;font-weight:900;margin:7px 0 5px}.passport-subtitle{font-size:12.5px;opacity:.9;max-width:520px}.passport-id-grid{display:grid;grid-template-columns:1.4fr .55fr 1fr;gap:9px;margin-top:18px}.passport-id-cell{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);border-radius:11px;padding:9px 10px;min-height:54px}.passport-id-cell .k{font-size:8.5px;text-transform:uppercase;letter-spacing:1px;opacity:.75;font-weight:800}.passport-id-cell .v{font-size:12.5px;margin-top:3px;font-weight:750;line-height:1.25}.passport-seal{position:absolute;right:22px;bottom:19px;width:52px;height:52px;border:2px solid rgba(255,255,255,.48);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;transform:rotate(-8deg);opacity:.9}.passport-code{margin-top:12px;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:9px;letter-spacing:1.1px;opacity:.66}
+.passport-intro{background:#fff;border:1px solid #e2d6ea;border-left:5px solid var(--violet);border-radius:12px;padding:10px 12px;margin-bottom:12px;font-size:11.5px;color:#535861}
+.section{margin:0 0 10px;break-inside:avoid;background:#fff;border:1px solid #e1e4e8;border-radius:13px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.025)}.section h3{font-size:13.5px;margin:0;padding:8px 11px;color:var(--violet-dark);display:flex;align-items:center;gap:7px;background:#f5eff8;border-bottom:1px solid #eadff0}.section .body{font-size:11.8px;line-height:1.38;white-space:pre-wrap;padding:10px 11px}.empty{color:#aaa;font-style:italic}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:8px}.two-col>div{background:#faf8fb;border:1px solid #eee7f2;border-radius:9px;padding:8px}.pill{display:inline-block;background:#eee4f4;color:#5d2b73;border:1px solid #dfcbe9;border-radius:999px;padding:3px 7px;margin:2px 3px 0 0;font-size:10px;font-weight:650}
+.footer-note{margin-top:12px;padding:9px 10px;border:1px dashed #cfc4d6;border-radius:10px;background:#fbfafc;font-size:9.4px;line-height:1.35;color:#6f6f76}.author{text-align:center;margin-top:7px;font-size:9.5px;color:#777}
+.help-card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px;margin-bottom:16px;box-shadow:0 2px 9px rgba(0,0,0,.05)}
+.help-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:12px}.help-head h2{margin:0;font-size:19px}.help-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.help-step{border:1px solid var(--line);border-radius:12px;padding:12px;background:#fbfcfd}.help-step strong{display:block;margin-bottom:4px;color:var(--violet-dark);font-size:13px}.help-step div{font-size:12.5px;color:#555}.help-example{background:#f8f4fa;border-left:4px solid var(--violet);padding:10px 12px;border-radius:8px;font-size:12.5px;color:#555;margin-top:12px}.help-final{margin-top:12px;font-size:12.5px;font-weight:700;color:#4f3a58}
+.hidden{display:none!important}
+@media(max-width:900px){.layout{grid-template-columns:1fr}.preview-wrap{position:static}.row,.two-col,.help-grid{grid-template-columns:1fr}.toolbar{position:static}}
+@media print{
+ @page{size:A4;margin:9mm 10mm 14mm}
+ body{background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact}.header,.toolbar,.formcol,.no-print,.help-card{display:none!important}.content{padding:0}.layout{display:block}.previewcol{width:100%}.preview-wrap{position:static}.passport{background:#fff;border:0;border-radius:0;padding:0;min-height:auto}.passport-cover{margin-bottom:9px;padding:17px 18px 14px;border-radius:13px;box-shadow:none}.passport-main-title{font-size:22px}.passport-id-grid{margin-top:12px}.passport-id-cell{min-height:45px;padding:7px 8px}.passport-seal{width:42px;height:42px;font-size:19px;right:17px;bottom:14px}.passport-intro{margin-bottom:8px;padding:7px 9px;font-size:10px}.section{margin-bottom:7px;border-radius:9px;box-shadow:none}.section h3{font-size:11.5px;padding:6px 8px}.section .body{font-size:10.2px;line-height:1.28;padding:7px 8px}.pill{font-size:8.8px;padding:2px 6px}.two-col{gap:6px}.two-col>div{padding:6px}.footer-note{font-size:8px;padding:6px 8px;margin-top:7px;margin-bottom:8mm}.author{position:fixed;bottom:3mm;left:0;right:0;font-size:8px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="header">
+    <div class="eyebrow">Outil pratique de continuité d'accompagnement</div>
+    <h1>Passeport d'accompagnement</h1>
+    <p>Créer une fiche courte pour transmettre les repères essentiels permettant de mieux accompagner un enfant au quotidien, sans résumer tout son dossier.</p>
+  </header>
+
+  <div class="toolbar no-print">
+    <div class="profilebar">
+      <label for="profileSelect" style="margin:0;font-size:12px">Dossier :</label>
+      <select id="profileSelect" onchange="changerDossier(this.value)"></select>
+      <button class="btn primary" onclick="nouveauDossier()">+ Nouveau dossier</button>
+    </div>
+    <button class="btn green" onclick="sauvegarder()">Enregistrer</button>
+    <button class="btn secondary" onclick="enregistrerVersion()">Créer une version</button>
+    <button class="btn secondary" onclick="window.print()">🖨 Imprimer / PDF</button>
+    <button class="btn ghost" onclick="exporterJSON()">⬇ Sauvegarde JSON</button>
+    <button class="btn ghost" onclick="document.getElementById('importJson').click()">⬆ Importer JSON</button>
+    <input id="importJson" class="hidden" type="file" accept="application/json,.json" onchange="importerJSON(event)">
+    <button class="btn ghost" onclick="toggleHelp()">? Mode d'emploi</button>
+    <div class="spacer"></div>
+    <button class="btn danger" onclick="supprimerDossier()">Supprimer le dossier</button>
+  </div>
+
+  <main class="content">
+    <section id="helpCard" class="help-card no-print hidden">
+      <div class="help-head">
+        <div>
+          <h2>Mode d'emploi</h2>
+          <div class="subtle">Comment construire un passeport court, concret et réellement utile aux professionnels qui accompagnent le jeune.</div>
+        </div>
+        <button class="btn ghost" onclick="toggleHelp(false)">Fermer</button>
+      </div>
+
+      <div class="help-grid">
+        <div class="help-step">
+          <strong>1. À quoi sert le passeport ?</strong>
+          <div>À transmettre rapidement les repères essentiels pour accompagner le jeune au quotidien, notamment lors d'un remplacement, d'un changement d'équipe, d'un nouveau lieu ou d'une intervention ponctuelle.</div>
+        </div>
+        <div class="help-step">
+          <strong>2. Ce qu'il ne doit pas devenir</strong>
+          <div>Ce n'est ni un résumé complet du dossier, ni un bilan clinique, ni un protocole de crise. Ne conserver que les informations utiles à l'accompagnement concret.</div>
+        </div>
+        <div class="help-step">
+          <strong>3. Comment le remplir ?</strong>
+          <div>Privilégier des formulations précises, observables et directement utilisables. Décrire ce que l'on voit et ce qui aide, plutôt que coller une étiquette ou supposer une intention.</div>
+        </div>
+        <div class="help-step">
+          <strong>4. Avec qui le construire ?</strong>
+          <div>Avec l'équipe, mais aussi avec l'enfant autant que possible, notamment pour préciser ce qu'il aime, comment il communique, ce qui l'aide et ce qu'il souhaite que les adultes sachent.</div>
+        </div>
+        <div class="help-step">
+          <strong>5. Quand le mettre à jour ?</strong>
+          <div>Lorsqu'un repère important change, qu'une nouvelle stratégie fonctionne ou qu'une information n'est plus valable. Le bouton « Créer une version » permet de conserver des états datés du passeport.</div>
+        </div>
+        <div class="help-step">
+          <strong>6. Confidentialité</strong>
+          <div>Ce passeport est destiné aux professionnels qui accompagnent l’enfant. Il peut donc comporter son identité lorsque cela est utile à l’usage du service. Il doit être conservé et transmis selon les règles de confidentialité et de sécurité en vigueur dans l’établissement ou le service. N’y faire figurer que les informations utiles à l’accompagnement quotidien.</div>
+        </div>
+      </div>
+
+      <div class="help-example"><strong>Exemple :</strong><br>❌ « Il supporte mal le bruit. »<br>✅ « Dans les environnements bruyants, il se bouche les oreilles et cherche à quitter la pièce. »</div>
+      <div class="help-final">Le passeport doit rester court, concret et évolutif. S'il devient trop long, il perd sa fonction de repère rapide.</div>
+    </section>
+    <div class="layout">
+      <section class="formcol">
+        <div class="card no-print">
+          <h2>Gestion du dossier</h2>
+          <div class="note">Chaque enfant dispose de son propre passeport enregistré dans ce navigateur. Les versions permettent de conserver des états datés du passeport au fil du temps.</div>
+          <div id="dossierStatus" class="statusline"></div>
+          <div class="field" style="margin-top:12px">
+            <label>Historique des versions</label>
+            <div class="version-row">
+              <select id="versionSelect"><option value="">Aucune version enregistrée</option></select>
+              <button class="btn secondary" onclick="restaurerVersion()">Restaurer</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>1. Repères d'identification</h2>
+          <div class="note">Renseigner l’identité de l’enfant selon les usages de l’établissement ou du service. Le passeport doit rester centré sur les informations directement utiles à son accompagnement.</div>
+          <div class="row">
+            <div class="field"><label>Nom et prénom de l’enfant</label><input id="nom" type="text" placeholder="Ex. Sam Dupont"></div>
+            <div class="field"><label>Âge</label><input id="age" type="text" placeholder="Ex. 11 ans"></div>
+          </div>
+          <div class="field"><label>Personne(s) ressource(s)</label><input id="ressource" type="text" placeholder="Ex. éducatrice référente, AESH, parent..."></div>
+        </div>
+
+        <div class="card">
+          <h2>2. Comment je communique</h2>
+          <div class="checks">
+            <label class="check"><input type="checkbox" class="comm" value="Langage oral">Langage oral</label>
+            <label class="check"><input type="checkbox" class="comm" value="Gestes">Gestes</label>
+            <label class="check"><input type="checkbox" class="comm" value="Pictogrammes / supports visuels">Pictogrammes</label>
+            <label class="check"><input type="checkbox" class="comm" value="CAA">CAA</label>
+            <label class="check"><input type="checkbox" class="comm" value="Écrit">Écrit</label>
+          </div>
+          <div class="field" style="margin-top:10px"><label>Repères pour me parler</label><textarea id="parler" placeholder="Ex. phrases courtes, une consigne à la fois, laisser 5 à 10 secondes pour répondre..."></textarea></div>
+          <div class="field"><label>Comment je montre « oui / non / stop / je ne comprends pas »</label><textarea id="signauxComm" placeholder="Ex. dit « non », détourne le regard, tend la main, montre un pictogramme..."></textarea></div>
+        </div>
+
+        <div class="card">
+          <h2>3. Compréhension et prévisibilité</h2>
+          <div class="field"><label>Ce que je comprends facilement</label><textarea id="comprend" placeholder="Ex. consignes simples, planning visuel, repères horaires..."></textarea></div>
+          <div class="field"><label>Ce qui peut être difficile à comprendre</label><textarea id="difficile" placeholder="Ex. consignes longues, second degré, changements imprévus, attentes non expliquées..."></textarea></div>
+          <div class="field"><label>Comment annoncer un changement</label><textarea id="changement" placeholder="Ex. prévenir à l'avance, montrer ce qui change et ce qui reste pareil..."></textarea></div>
+        </div>
+
+        <div class="card">
+          <h2>4. Éléments de contexte qui peuvent compter</h2>
+          <div class="note">Décrire des éléments concrets, sans supposer qu'ils sont la cause d'une difficulté.</div>
+          <div class="checks" id="ctxchecks">
+            <label class="check"><input type="checkbox" value="Environnement bruyant / nombreux sons">Bruit / nombreux sons</label>
+            <label class="check"><input type="checkbox" value="Environnement très silencieux / peu de sons">Très silencieux</label>
+            <label class="check"><input type="checkbox" value="Éclairage intense / clignotant">Éclairage intense</label>
+            <label class="check"><input type="checkbox" value="Éclairage faible / pénombre">Éclairage faible</label>
+            <label class="check"><input type="checkbox" value="Forte proximité / espace très fréquenté">Forte proximité</label>
+            <label class="check"><input type="checkbox" value="Attente">Attente</label>
+            <label class="check"><input type="checkbox" value="Transition">Transition</label>
+            <label class="check"><input type="checkbox" value="Changement imprévu">Changement imprévu</label>
+            <label class="check"><input type="checkbox" value="Multiples sollicitations simultanées">Multiples sollicitations</label>
+          </div>
+          <div class="field" style="margin-top:10px"><label>Autres éléments importants</label><textarea id="autresCtx" placeholder="Ex. retour de visite, fatigue connue, douleur signalée, nouveau professionnel..."></textarea></div>
+        </div>
+
+        <div class="card">
+          <h2>5. Quand ça devient difficile</h2>
+          <div class="field"><label>Signes observables</label><textarea id="signes" placeholder="Ex. répète la même question, parle plus fort, marche rapidement, s'isole, se bouche les oreilles..."></textarea></div>
+          <div class="field"><label>Ce qui m'aide concrètement</label><textarea id="aide" placeholder="Ex. me prévenir, réduire les paroles, montrer ce qui vient après, proposer une pause..."></textarea></div>
+          <div class="field"><label>Ce qu'il vaut mieux éviter si possible</label><textarea id="eviter" placeholder="Ex. plusieurs consignes à la fois, confronter devant le groupe, toucher sans prévenir..."></textarea></div>
+          <div class="field"><label>Si je suis en difficulté, que faire ?</label><textarea id="conduite" placeholder="Ex. parler peu, rester à proximité, proposer l'espace calme, solliciter le référent..."></textarea></div>
+        </div>
+
+        <div class="card">
+          <h2>6. Vie quotidienne et autonomie</h2>
+          <div class="field"><label>Repas / alimentation</label><textarea id="repas" placeholder="Repères utiles uniquement"></textarea></div>
+          <div class="field"><label>Hygiène / habillage</label><textarea id="hygiene" placeholder="Repères utiles uniquement"></textarea></div>
+          <div class="field"><label>Sommeil / coucher</label><textarea id="sommeil" placeholder="Repères utiles uniquement"></textarea></div>
+          <div class="field"><label>Déplacements / sorties</label><textarea id="deplacements" placeholder="Repères utiles uniquement"></textarea></div>
+        </div>
+
+        <div class="card">
+          <h2>7. Parole de l'enfant</h2>
+          <div class="field"><label>Ce que je veux que les adultes sachent</label><textarea id="paroleEnfant" placeholder="À renseigner avec l'enfant lorsque cela est possible"></textarea></div>
+          <div class="field"><label>Ce que j'aime / ce qui me motive</label><textarea id="aime" placeholder="Centres d'intérêt, activités, personnes, objets repères..."></textarea></div>
+        </div>
+
+        <div class="card">
+          <h2>8. Sections à afficher dans le passeport</h2>
+          <div class="checks">
+            <label class="check"><input type="checkbox" class="showsec" value="communication" checked>Communication</label>
+            <label class="check"><input type="checkbox" class="showsec" value="comprehension" checked>Compréhension</label>
+            <label class="check"><input type="checkbox" class="showsec" value="contexte" checked>Contexte</label>
+            <label class="check"><input type="checkbox" class="showsec" value="difficulte" checked>Difficultés / aides</label>
+            <label class="check"><input type="checkbox" class="showsec" value="quotidien" checked>Vie quotidienne</label>
+            <label class="check"><input type="checkbox" class="showsec" value="parole" checked>Parole de l'enfant</label>
+          </div>
+        </div>
+      </section>
+
+      <section class="previewcol">
+        <div class="preview-wrap">
+          <div class="passport" id="passport"></div>
+        </div>
+      </section>
+    </div>
+  </main>
+</div>
+
+<script>
+const KEY='passeport_accompagnement_v2';
+const OLD_KEY='passeport_accompagnement_v1';
+const ids=['nom','age','ressource','parler','signauxComm','comprend','difficile','changement','autresCtx','signes','aide','eviter','conduite','repas','hygiene','sommeil','deplacements','paroleEnfant','aime'];
+let state=chargerEtat();
+let activeProfileId=state.activeProfileId || state.profiles[0]?.id || null;
+let saveTimer=null;
+
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,8)}
+function esc(v){return String(v||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function txt(id){return document.getElementById(id).value.trim()}
+function checked(selector){return [...document.querySelectorAll(selector+':checked')].map(x=>x.value)}
+function body(v){return v?esc(v).replace(/\n/g,'<br>'):'<span class="empty">Non renseigné</span>'}
+function section(title,content,key){if(!checked('.showsec').includes(key))return'';return `<div class="section"><h3>${title}</h3><div class="body">${content}</div></div>`}
+function pills(arr){return arr.length?arr.map(v=>`<span class="pill">${esc(v)}</span>`).join(''):'<span class="empty">Non renseigné</span>'}
+function nowIso(){return new Date().toISOString()}
+function fmtDate(v){if(!v)return '—';try{return new Date(v).toLocaleString('fr-FR',{dateStyle:'short',timeStyle:'short'})}catch(e){return v}}
+function currentProfile(){return state.profiles.find(p=>p.id===activeProfileId)||null}
+
+function emptyData(){const fields={};ids.forEach(id=>fields[id]='');return{fields,comm:[],ctx:[],sections:['communication','comprehension','contexte','difficulte','quotidien','parole']}}
+function chargerEtat(){
+  try{
+    const raw=localStorage.getItem(KEY);
+    if(raw){const d=JSON.parse(raw);if(Array.isArray(d.profiles))return d}
+  }catch(e){}
+  // Migration automatique de l'ancienne version à passeport unique.
+  try{
+    const old=localStorage.getItem(OLD_KEY);
+    if(old){
+      const data=JSON.parse(old);const name=(data.fields?.nom||'Dossier 01').trim()||'Dossier 01';const id=uid();
+      const migrated={profiles:[{id,name,data,createdAt:nowIso(),updatedAt:nowIso(),versions:[]}],activeProfileId:id};
+      localStorage.setItem(KEY,JSON.stringify(migrated));return migrated;
+    }
+  }catch(e){}
+  const id=uid();return{profiles:[{id,name:'Dossier 01',data:emptyData(),createdAt:nowIso(),updatedAt:null,versions:[]}],activeProfileId:id};
+}
+function sauverEtat(){state.activeProfileId=activeProfileId;localStorage.setItem(KEY,JSON.stringify(state))}
+function collectData(){const data={fields:{},comm:checked('.comm'),ctx:checked('#ctxchecks input'),sections:checked('.showsec')};ids.forEach(id=>data.fields[id]=document.getElementById(id).value);return data}
+function applyData(d){const data=d||emptyData();ids.forEach(id=>document.getElementById(id).value=data.fields?.[id]||'');document.querySelectorAll('.comm').forEach(x=>x.checked=(data.comm||[]).includes(x.value));document.querySelectorAll('#ctxchecks input').forEach(x=>x.checked=(data.ctx||[]).includes(x.value));document.querySelectorAll('.showsec').forEach(x=>x.checked=(data.sections||[]).includes(x.value));generer()}
+function profileDisplayName(p){const n=p?.data?.fields?.nom?.trim();return n||p?.name||'Dossier sans nom'}
+
+function renderProfiles(){
+  const sel=document.getElementById('profileSelect');
+  sel.innerHTML=state.profiles.map(p=>`<option value="${p.id}" ${p.id===activeProfileId?'selected':''}>${esc(profileDisplayName(p))}</option>`).join('');
+  renderVersions();renderStatus();
+}
+function renderStatus(){const p=currentProfile();const el=document.getElementById('dossierStatus');if(!p){el.textContent='Aucun dossier actif.';return}el.innerHTML=`<strong>${esc(profileDisplayName(p))}</strong> — créé le ${esc(fmtDate(p.createdAt))} • dernière actualisation : ${esc(fmtDate(p.updatedAt))} • ${p.versions?.length||0} version(s) conservée(s)`}
+function renderVersions(){const p=currentProfile();const sel=document.getElementById('versionSelect');const versions=[...(p?.versions||[])].sort((a,b)=>String(b.createdAt).localeCompare(String(a.createdAt)));if(!versions.length){sel.innerHTML='<option value="">Aucune version enregistrée</option>';return}sel.innerHTML='<option value="">Choisir une version...</option>'+versions.map((v,i)=>`<option value="${v.id}">${esc(v.label||('Version du '+fmtDate(v.createdAt)))}</option>`).join('')}
+
+function nouveauDossier(){
+  sauvegarder(false);
+  const nom=prompt('Nom et prénom de l’enfant :','Nouveau dossier');
+  if(nom===null)return;
+  const id=uid();const data=emptyData();data.fields.nom=(nom.trim()&&nom.trim()!=='Nouveau dossier')?nom.trim():'';
+  state.profiles.push({id,name:nom.trim()||'Nouveau dossier',data,createdAt:nowIso(),updatedAt:null,versions:[]});activeProfileId=id;sauverEtat();applyData(data);renderProfiles();
+}
+function changerDossier(id){if(id===activeProfileId)return;sauvegarder(false);activeProfileId=id;sauverEtat();applyData(currentProfile()?.data||emptyData());renderProfiles()}
+function supprimerDossier(){const p=currentProfile();if(!p)return;if(!confirm(`Supprimer le dossier « ${profileDisplayName(p)} » ainsi que son historique de versions ?`))return;state.profiles=state.profiles.filter(x=>x.id!==p.id);if(!state.profiles.length){const id=uid();state.profiles.push({id,name:'Dossier 01',data:emptyData(),createdAt:nowIso(),updatedAt:null,versions:[]})}activeProfileId=state.profiles[0].id;sauverEtat();applyData(currentProfile().data);renderProfiles()}
+
+function generer(){
+ const comm=checked('.comm');
+ const ctx=checked('#ctxchecks input');
+ const nom=txt('nom')||'Enfant / jeune';
+ const age=txt('age');
+ const res=txt('ressource');
+ const p=currentProfile();
+ const html=`
+  <div class="passport-cover">
+    <div class="passport-kicker">Passeport d'accompagnement</div>
+    <div class="passport-main-title">Quelques repères pour bien m'accompagner</div>
+    <div class="passport-subtitle">Un support court, concret et évolutif pour faciliter la continuité de mon accompagnement.</div>
+    <div class="passport-id-grid">
+      <div class="passport-id-cell"><div class="k">Nom et prénom</div><div class="v">${esc(nom)}</div></div>
+      <div class="passport-id-cell"><div class="k">Âge</div><div class="v">${age?esc(age):'—'}</div></div>
+      <div class="passport-id-cell"><div class="k">Personne(s) ressource(s)</div><div class="v">${res?esc(res):'—'}</div></div>
+    </div>
+    <div class="passport-code">REPÈRES • COMMUNICATION • AUTONOMIE • CONTINUITÉ</div>
+    <div class="passport-seal">✦</div>
+  </div>
+  <div class="passport-intro"><strong>À garder à portée de main :</strong> ce passeport rassemble uniquement les repères utiles au quotidien. Il ne remplace ni le dossier de l'enfant, ni les protocoles institutionnels.</div>
+  ${section('🗣 Comment je communique',`${pills(comm)}<br><br><strong>Pour me parler :</strong><br>${body(txt('parler'))}<br><br><strong>Comment je montre oui / non / stop / je ne comprends pas :</strong><br>${body(txt('signauxComm'))}`,'communication')}
+  ${section("🧭 Ce qui m'aide à comprendre et anticiper",`<strong>Je comprends facilement :</strong><br>${body(txt('comprend'))}<br><br><strong>Peut être plus difficile :</strong><br>${body(txt('difficile'))}<br><br><strong>Pour annoncer un changement :</strong><br>${body(txt('changement'))}`,"comprehension")}
+  ${section('🌿 Éléments de contexte à connaître',`${pills(ctx)}${txt('autresCtx')?'<br><br>'+body(txt('autresCtx')):''}`,'contexte')}
+  ${section("⚠️ Quand ça devient difficile",`<strong>Signes observables :</strong><br>${body(txt('signes'))}<br><br><strong>Ce qui m'aide :</strong><br>${body(txt('aide'))}<br><br><strong>À éviter si possible :</strong><br>${body(txt('eviter'))}<br><br><strong>Si je suis en difficulté :</strong><br>${body(txt('conduite'))}`,"difficulte")}
+  ${section('🏠 Vie quotidienne',`<div class="two-col"><div><strong>Repas / alimentation</strong><br>${body(txt('repas'))}</div><div><strong>Hygiène / habillage</strong><br>${body(txt('hygiene'))}</div><div><strong>Sommeil / coucher</strong><br>${body(txt('sommeil'))}</div><div><strong>Déplacements / sorties</strong><br>${body(txt('deplacements'))}</div></div>`,'quotidien')}
+  ${section('💬 Ce que je veux que les adultes sachent',`${body(txt('paroleEnfant'))}<br><br><strong>Ce que j'aime / ce qui me motive :</strong><br>${body(txt('aime'))}`,'parole')}
+  <div class="footer-note">Document à actualiser au fil des observations. Lorsque cela est possible, les repères doivent être discutés et construits avec l'enfant. Ce passeport doit être conservé et transmis selon les règles de confidentialité et de sécurité de l’établissement ou du service, et rester centré sur les informations utiles à l’accompagnement quotidien.${p?.updatedAt?'<br><strong>Dernière actualisation :</strong> '+esc(fmtDate(p.updatedAt)):''}</div>
+  <div class="author">Auteur de l'outil : Malek MENAD — Éducateur spécialisé</div>`;
+ document.getElementById('passport').innerHTML=html;
+}
+
+function sauvegarder(showMessage=true){const p=currentProfile();if(!p)return;p.data=collectData();p.name=p.data.fields.nom.trim()||p.name||'Dossier sans nom';p.updatedAt=nowIso();sauverEtat();renderProfiles();generer();if(showMessage)alert('Dossier enregistré sur ce navigateur.')}
+function autosave(){clearTimeout(saveTimer);saveTimer=setTimeout(()=>sauvegarder(false),350)}
+
+function enregistrerVersion(){const p=currentProfile();if(!p)return;sauvegarder(false);const stamp=nowIso();const snapshot=JSON.parse(JSON.stringify(p.data));p.versions=p.versions||[];p.versions.push({id:uid(),createdAt:stamp,label:'Version du '+fmtDate(stamp),data:snapshot});sauverEtat();renderProfiles();alert('Nouvelle version enregistrée.')}
+function restaurerVersion(){const p=currentProfile();const id=document.getElementById('versionSelect').value;if(!p||!id){alert('Choisis une version à restaurer.');return}const v=(p.versions||[]).find(x=>x.id===id);if(!v)return;if(!confirm(`Restaurer ${v.label||'cette version'} ? Le contenu actuel sera remplacé, mais les versions déjà enregistrées seront conservées.`))return;p.data=JSON.parse(JSON.stringify(v.data));p.updatedAt=nowIso();sauverEtat();applyData(p.data);renderProfiles();alert('Version restaurée.')}
+
+function exporterJSON(){sauvegarder(false);const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='passeports_accompagnement_sauvegarde.json';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000)}
+function importerJSON(event){const f=event.target.files?.[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);if(!d||!Array.isArray(d.profiles))throw new Error('format');if(!confirm('Importer cette sauvegarde remplacera les passeports actuellement enregistrés sur ce navigateur. Continuer ?'))return;state=d;activeProfileId=state.activeProfileId||state.profiles[0]?.id||null;if(!state.profiles.length)throw new Error('vide');sauverEtat();applyData(currentProfile()?.data||emptyData());renderProfiles();alert('Sauvegarde importée.')}catch(e){alert('Fichier JSON non reconnu.')}};r.readAsText(f);event.target.value=''}
+
+function reinitialiser(){if(!confirm('Effacer le contenu du passeport actif ?'))return;const p=currentProfile();if(!p)return;p.data=emptyData();p.updatedAt=nowIso();sauverEtat();applyData(p.data);renderProfiles()}
+
+function toggleHelp(force){
+  const card=document.getElementById('helpCard');
+  const show=typeof force==='boolean'?force:card.classList.contains('hidden');
+  card.classList.toggle('hidden',!show);
+  if(show)card.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function init(){if(!activeProfileId){activeProfileId=state.profiles[0].id}sauverEtat();applyData(currentProfile()?.data||emptyData());renderProfiles();document.querySelectorAll('input,textarea').forEach(el=>el.addEventListener('input',()=>{generer();autosave()}));document.querySelectorAll('input[type=checkbox]').forEach(el=>el.addEventListener('change',()=>{generer();autosave()}))}
+init();
+</script>
+</body>
+</html>
