@@ -51,6 +51,21 @@ textarea{min-height:72px;resize:vertical}.row{display:grid;grid-template-columns
  body{background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact}.header,.toolbar,.formcol,.no-print,.help-card{display:none!important}.content{padding:0}.layout{display:block}.previewcol{width:100%}.preview-wrap{position:static}.passport{background:#fff;border:0;border-radius:0;padding:0;min-height:auto}.passport-cover{margin-bottom:9px;padding:17px 18px 14px;border-radius:13px;box-shadow:none}.passport-main-title{font-size:22px}.passport-id-grid{margin-top:12px}.passport-id-cell{min-height:45px;padding:7px 8px}.passport-seal{width:42px;height:42px;font-size:19px;right:17px;bottom:14px}.passport-intro{margin-bottom:8px;padding:7px 9px;font-size:10px}.section{margin-bottom:7px;border-radius:9px;box-shadow:none}.section h3{font-size:11.5px;padding:6px 8px}.section .body{font-size:10.2px;line-height:1.28;padding:7px 8px}.pill{font-size:8.8px;padding:2px 6px}.two-col{gap:6px}.two-col>div{padding:6px}.footer-note{font-size:8px;padding:6px 8px;margin-top:7px;margin-bottom:8mm}.author{position:fixed;bottom:3mm;left:0;right:0;font-size:8px}
 }
 </style>
+
+<style>
+.license-notice{
+  max-width:1100px;
+  margin:18px auto 8px;
+  padding:10px 16px;
+  text-align:center;
+  font-size:11px;
+  line-height:1.45;
+  color:#6b6870;
+}
+.license-notice a{color:inherit;text-decoration:underline}
+@media print{.license-notice{display:none!important}}
+</style>
+
 </head>
 <body>
 <div class="app">
@@ -75,6 +90,7 @@ textarea{min-height:72px;resize:vertical}.row{display:grid;grid-template-columns
     <button class="btn ghost" onclick="toggleHelp()">? Mode d'emploi</button>
     <div class="spacer"></div>
     <button class="btn danger" onclick="supprimerDossier()">Supprimer le dossier</button>
+    <button class="btn danger" onclick="effacerToutesLesDonneesOutil()">Effacer toutes les données</button>
   </div>
 
   <main class="content">
@@ -335,5 +351,25 @@ function toggleHelp(force){
 function init(){if(!activeProfileId){activeProfileId=state.profiles[0].id}sauverEtat();applyData(currentProfile()?.data||emptyData());renderProfiles();document.querySelectorAll('input,textarea').forEach(el=>el.addEventListener('input',()=>{generer();autosave()}));document.querySelectorAll('input[type=checkbox]').forEach(el=>el.addEventListener('change',()=>{generer();autosave()}))}
 init();
 </script>
+
+  
+<script>
+function effacerToutesLesDonneesOutil(){
+  if(!confirm("Effacer définitivement tous les passeports, historiques et données enregistrés par cet outil dans ce navigateur ?")) return;
+  localStorage.removeItem(KEY);
+  localStorage.removeItem(OLD_KEY);
+  alert("Toutes les données enregistrées par cet outil ont été supprimées.");
+  location.reload();
+}
+</script>
+
+<script data-goatcounter="https://menadmalek.goatcounter.com/count"
+          async src="//gc.zgo.at/count.js"></script>
+
+<div class="license-notice no-print">
+  © 2026 Malek MENAD — Usage personnel gratuit.
+  Usage professionnel ou institutionnel soumis à autorisation préalable.
+  Revente interdite. <a href="LICENSE.txt" target="_blank" rel="noopener">Voir la licence</a>.
+</div>
 </body>
 </html>
